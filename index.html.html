@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V Know Maths - Algebra Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(180deg); }
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .email-info {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 3px solid #e9ecef;
+        }
+
+        .email-info strong {
+            color: #1e3c72;
+            font-size: 1.1rem;
+        }
+
+        .quiz-container {
+            padding: 30px;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .questions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .question {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .question::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .question:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .question:hover::before {
+            left: 100%;
+        }
+
+        .question.correct {
+            border-color: #4CAF50;
+            background: linear-gradient(135deg, #e8f5e8 0%, #f1f8e9 100%);
+        }
+
+        .question.incorrect {
+            border-color: #f44336;
+            background: linear-gradient(135deg, #ffeaea 0%, #ffebee 100%);
+        }
+
+        .question-number {
+            font-weight: bold;
+            color: #1e3c72;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .equation {
+            font-size: 1.3rem;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+            line-height: 1.6;
+        }
+
+        .fraction {
+            display: inline-block;
+            text-align: center;
+            vertical-align: middle;
+            margin: 0 3px;
+        }
+
+        .numerator {
+            display: block;
+            border-bottom: 1px solid #333;
+            padding-bottom: 2px;
+            margin-bottom: 2px;
+        }
+
+        .denominator {
+            display: block;
+            padding-top: 2px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .variable-label {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #1e3c72;
+            margin-right: 5px;
+        }
+
+        .input-group input {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            transition: border-color 0.3s ease;
+            text-align: center;
+            width: 120px;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+        }
+
+        .status-icon {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .status-icon.correct {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .status-icon.incorrect {
+            background: #f44336;
+            color: white;
+        }
+
+        .check-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 0 auto;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .check-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .check-btn:active {
+            transform: translateY(0);
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 20px;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .results {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+        }
+
+        .results h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .performance-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .performance-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00b894, #00cec9);
+            border-radius: 10px;
+            transition: width 1s ease;
+            width: 0%;
+        }
+
+        @media (max-width: 768px) {
+            .questions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-number {
+            position: absolute;
+            color: rgba(255,255,255,0.1);
+            font-size: 3rem;
+            font-weight: bold;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-number" style="top: 10%; left: 5%; animation-delay: 0s;">π</div>
+        <div class="floating-number" style="top: 20%; right: 10%; animation-delay: 1s;">∑</div>
+        <div class="floating-number" style="bottom: 30%; left: 8%; animation-delay: 2s;">∞</div>
+        <div class="floating-number" style="bottom: 20%; right: 15%; animation-delay: 3s;">√</div>
+        <div class="floating-number" style="top: 60%; left: 50%; animation-delay: 4s;">∂</div>
+        <div class="floating-number" style="top: 40%; left: 15%; animation-delay: 5s;">∫</div>
+        <div class="floating-number" style="top: 80%; right: 25%; animation-delay: 6s;">α</div>
+        <div class="floating-number" style="bottom: 50%; right: 5%; animation-delay: 7s;">β</div>
+        <div class="floating-number" style="top: 15%; left: 70%; animation-delay: 8s;">θ</div>
+        <div class="floating-number" style="bottom: 15%; left: 40%; animation-delay: 9s;">λ</div>
+        <div class="floating-number" style="top: 70%; right: 40%; animation-delay: 10s;">μ</div>
+        <div class="floating-number" style="bottom: 60%; left: 25%; animation-delay: 11s;">Σ</div>
+        <div class="floating-number" style="top: 35%; right: 60%; animation-delay: 12s;">Ω</div>
+        <div class="floating-number" style="bottom: 40%; right: 80%; animation-delay: 13s;">Δ</div>
+        <div class="floating-number" style="top: 85%; left: 60%; animation-delay: 14s;">φ</div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🎓 V KNOW MATHS</h1>
+            <p>Simple Equation Simplification - Interactive Quiz</p>
+        </div>
+        
+        <div class="email-info">
+            <strong>📧 Contact: vknowmaths@gmail.com | 📱 +94 77 882 7114</strong>
+        </div>
+
+        <div class="quiz-container">
+            <div class="score-display" id="scoreDisplay">
+                Score: 0/40 | Percentage: 0%
+            </div>
+
+            <div class="questions-grid" id="questionsGrid">
+                <!-- Questions will be generated by JavaScript -->
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="check-btn" onclick="checkAllAnswers()">🔍 Check My Answers</button>
+                <button class="reset-btn" onclick="resetQuiz()">🔄 Reset Quiz</button>
+            </div>
+
+            <div class="results" id="results">
+                <h3>🎉 Quiz Complete!</h3>
+                <div class="performance-bar">
+                    <div class="performance-fill" id="performanceFill"></div>
+                </div>
+                <p id="resultText"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Question data with equations and correct answers
+        const questions = [
+            { eq: "x + 8 = 13", variable: "x", answer: 5 },
+            { eq: "x - 6 = 10", variable: "x", answer: 16 },
+            { eq: "p + 2 = -4", variable: "p", answer: -6 },
+            { eq: "y - 15 = -8", variable: "y", answer: 7 },
+            { eq: "8x = 40", variable: "x", answer: 5 },
+            { eq: "-4x = 28", variable: "x", answer: -7 },
+            { eq: "<span class='fraction'><span class='numerator'>m</span><span class='denominator'>-9</span></span> = -2", variable: "m", answer: 18 },
+            { eq: "<span class='fraction'><span class='numerator'>r</span><span class='denominator'>5</span></span> = 6", variable: "r", answer: 30 },
+            { eq: "<span class='fraction'><span class='numerator'>x</span><span class='denominator'>-6</span></span> = 2", variable: "x", answer: -12 },
+            { eq: "<span class='fraction'><span class='numerator'>y</span><span class='denominator'>15</span></span> = (-3)", variable: "y", answer: -45 },
+            { eq: "2x + 3 = 9", variable: "x", answer: 3 },
+            { eq: "5y - 11 = 19", variable: "y", answer: 6 },
+            { eq: "-7p - 20 = -27", variable: "p", answer: 1 },
+            { eq: "3 + 4x = 19", variable: "x", answer: 4 },
+            { eq: "<span class='fraction'><span class='numerator'>y</span><span class='denominator'>4</span></span> - 1 = 5", variable: "y", answer: 24 },
+            { eq: "<span class='fraction'><span class='numerator'>9</span><span class='denominator'>3</span></span> + 8 = 7", variable: "Answer", answer: -6 },
+            { eq: "<span class='fraction'><span class='numerator'>3x</span><span class='denominator'>2</span></span> - 10 = -4", variable: "x", answer: 4 },
+            { eq: "7 - <span class='fraction'><span class='numerator'>3x</span><span class='denominator'>4</span></span> = (-2)", variable: "x", answer: 12 },
+            { eq: "2 - <span class='fraction'><span class='numerator'>3p</span><span class='denominator'>16</span></span> = 8", variable: "p", answer: -32 },
+            { eq: "<span class='fraction'><span class='numerator'>5k</span><span class='denominator'>16</span></span> - 2 = 3", variable: "k", answer: 16 },
+            { eq: "5(x + 3) = 20", variable: "x", answer: 1 },
+            { eq: "2(2x - 1) = -14", variable: "x", answer: -3 },
+            { eq: "6(1 - 3x) = 20", variable: "x", answer: -1 },
+            { eq: "<span class='fraction'><span class='numerator'>4</span><span class='denominator'>5</span></span>(x - 2) = 12", variable: "x", answer: 17 },
+            { eq: "3(<span class='fraction'><span class='numerator'>5x</span><span class='denominator'>2</span></span> + 1) = -27", variable: "x", answer: -4 },
+            { eq: "6(<span class='fraction'><span class='numerator'>2m</span><span class='denominator'>3</span></span> - 1) = 18", variable: "m", answer: 6 },
+            { eq: "<span class='fraction'><span class='numerator'>1</span><span class='denominator'>5</span></span>(7x - 2) = 3", variable: "x", answer: 17 },
+            { eq: "2(1 - 2x) - 13 = 9", variable: "x", answer: -10 },
+            { eq: "4(3 - 6x) + 25 = -11", variable: "x", answer: 2 },
+            { eq: "2<span class='fraction'><span class='numerator'>(4x - 8)</span><span class='denominator'>3</span></span> = 8", variable: "x", answer: 5 },
+            { eq: "3<span class='fraction'><span class='numerator'>(k - 2)</span><span class='denominator'>5</span></span> = 12", variable: "k", answer: 22 },
+            { eq: "<span class='fraction'><span class='numerator'>7</span><span class='denominator'>2</span></span>(3 - x) - 8 = 27", variable: "x", answer: -7 },
+            { eq: "<span class='fraction'><span class='numerator'>(8x - 2)</span><span class='denominator'>7</span></span> = 2", variable: "x", answer: 2 },
+            { eq: "<span class='fraction'><span class='numerator'>(y - 9)</span><span class='denominator'>2</span></span> + 1 = 4", variable: "y", answer: 15 },
+            { eq: "<span class='fraction'><span class='numerator'>21</span><span class='denominator'>(4x + 1)</span></span> = 3", variable: "x", answer: 1.75 },
+            { eq: "<span class='fraction'><span class='numerator'>3</span><span class='denominator'>(k + 2)</span></span> = <span class='fraction'><span class='numerator'>3</span><span class='denominator'>7</span></span>", variable: "k", answer: 5 },
+            { eq: "<span class='fraction'><span class='numerator'>10</span><span class='denominator'>(y - 3)</span></span> = <span class='fraction'><span class='numerator'>-5</span><span class='denominator'>8</span></span>", variable: "y", answer: 19 },
+            { eq: "<span class='fraction'><span class='numerator'>1</span><span class='denominator'>3</span></span>(<span class='fraction'><span class='numerator'>2p</span><span class='denominator'>3</span></span> - 8) = 2", variable: "p", answer: 21 },
+            { eq: "2(<span class='fraction'><span class='numerator'>x</span><span class='denominator'>3</span></span> - 1) = (-6)", variable: "x", answer: -6 },
+            { eq: "2{3(2x - 1) + 4} = 38", variable: "x", answer: 3 }
+        ];
+
+        let userAnswers = {};
+        let isChecked = false;
+
+        function generateQuestions() {
+            const grid = document.getElementById('questionsGrid');
+            grid.innerHTML = '';
+
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <div class="question-number">Question ${index + 1}</div>
+                    <div class="equation">${q.eq}</div>
+                    <div class="input-group">
+                        <span class="variable-label">${q.variable} =</span>
+                        <input type="number" step="any" id="answer_${index}" placeholder="Answer" onchange="updateAnswer(${index}, this.value)">
+                        <div class="status-icon" id="status_${index}"></div>
+                    </div>
+                `;
+                grid.appendChild(questionDiv);
+            });
+        }
+
+        function updateAnswer(questionIndex, value) {
+            userAnswers[questionIndex] = parseFloat(value);
+            if (isChecked) {
+                checkSingleAnswer(questionIndex);
+                updateScore();
+            }
+        }
+
+        function checkSingleAnswer(index) {
+            const question = document.querySelector(`.question:nth-child(${index + 1})`);
+            const statusIcon = document.getElementById(`status_${index}`);
+            const userAnswer = userAnswers[index];
+            const correctAnswer = questions[index].answer;
+
+            if (userAnswer !== undefined && Math.abs(userAnswer - correctAnswer) < 0.01) {
+                question.classList.remove('incorrect');
+                question.classList.add('correct');
+                statusIcon.className = 'status-icon correct';
+                statusIcon.textContent = '✓';
+            } else if (userAnswer !== undefined) {
+                question.classList.remove('correct');
+                question.classList.add('incorrect');
+                statusIcon.className = 'status-icon incorrect';
+                statusIcon.textContent = '✗';
+            } else {
+                question.classList.remove('correct', 'incorrect');
+                statusIcon.className = 'status-icon';
+                statusIcon.textContent = '';
+            }
+        }
+
+        function checkAllAnswers() {
+            isChecked = true;
+            for (let i = 0; i < questions.length; i++) {
+                checkSingleAnswer(i);
+            }
+            updateScore();
+            showResults();
+        }
+
+        function updateScore() {
+            let correct = 0;
+            for (let i = 0; i < questions.length; i++) {
+                const userAnswer = userAnswers[i];
+                const correctAnswer = questions[i].answer;
+                if (userAnswer !== undefined && Math.abs(userAnswer - correctAnswer) < 0.01) {
+                    correct++;
+                }
+            }
+            
+            const percentage = Math.round((correct / questions.length) * 100);
+            document.getElementById('scoreDisplay').textContent = `Score: ${correct}/${questions.length} | Percentage: ${percentage}%`;
+            
+            return { correct, percentage };
+        }
+
+        function showResults() {
+            const { correct, percentage } = updateScore();
+            const results = document.getElementById('results');
+            const performanceFill = document.getElementById('performanceFill');
+            const resultText = document.getElementById('resultText');
+
+            results.style.display = 'block';
+            
+            setTimeout(() => {
+                performanceFill.style.width = percentage + '%';
+            }, 100);
+
+            let message = '';
+            if (percentage >= 90) {
+                message = '🌟 Excellent work! You have mastered these concepts!';
+            } else if (percentage >= 80) {
+                message = '👍 Great job! You have a solid understanding!';
+            } else if (percentage >= 70) {
+                message = '📚 Good work! Review the incorrect answers and try again.';
+            } else if (percentage >= 60) {
+                message = '💪 Keep practicing! You\'re making progress.';
+            } else {
+                message = '📖 Don\'t give up! Review the concepts and try again.';
+            }
+
+            resultText.textContent = `You scored ${correct} out of ${questions.length} questions correctly (${percentage}%). ${message}`;
+        }
+
+        function resetQuiz() {
+            userAnswers = {};
+            isChecked = false;
+            
+            // Clear all inputs
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                input.value = '';
+            });
+            
+            // Remove all styling
+            document.querySelectorAll('.question').forEach(q => {
+                q.classList.remove('correct', 'incorrect');
+            });
+            
+            // Clear status icons
+            document.querySelectorAll('.status-icon').forEach(icon => {
+                icon.className = 'status-icon';
+                icon.textContent = '';
+            });
+            
+            // Reset score
+            document.getElementById('scoreDisplay').textContent = 'Score: 0/40 | Percentage: 0%';
+            
+            // Hide results
+            document.getElementById('results').style.display = 'none';
+        }
+
+        // Initialize the quiz when page loads
+        window.onload = function() {
+            generateQuestions();
+        };
+    </script>
+</body>
+</html>
